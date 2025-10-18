@@ -1,9 +1,13 @@
 import os
 import boto3
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, app, request, render_template, jsonify
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 from botocore.exceptions import ClientError
+from flask_cors import CORS
+CORS(app)
+
+
 
 application = Flask(__name__)
 CORS(application)

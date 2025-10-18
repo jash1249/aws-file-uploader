@@ -100,3 +100,6 @@ The `.env` file and all secrets are excluded via `.gitignore` for security.
 
 AI tools were used for code generation (Flask app structure, debugging, and README templating) and to solve deployment errors.
 
+## Hosted online using AWS
+
+jaswanth-progress-environment.eba-vfm25apr.ap-south-1.elasticbeanstalk.com  
