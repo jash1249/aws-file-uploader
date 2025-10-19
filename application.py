@@ -1,13 +1,10 @@
 import os
 import boto3
-from flask import Flask, app, request, render_template, jsonify
-from flask_cors import CORS
 from werkzeug.utils import secure_filename
 from botocore.exceptions import ClientError
 from flask_cors import CORS
-CORS(app)
-
-
+from flask import Flask, request, render_template, jsonify
+from flask_cors import CORS
 
 application = Flask(__name__)
 CORS(application)
@@ -73,6 +70,5 @@ def upload_file():
 def health():
     return jsonify({'status': 'healthy', 'service': 'file-uploader'}), 200
 
-if __name__ == '__main__':
-    application.run(debug=True, host='0.0.0.0', port=5000)
+
 
