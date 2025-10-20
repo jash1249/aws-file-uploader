@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AWS File Uploader - Frontend</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width:700px; margin:40px auto; padding:0 20px; }
+    .card { border:1px solid #ddd; padding:20px; border-radius:8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);}
+    label {display:block; margin:10px 0 5px;}
+    input[type=file] { display:block; }
+    button { margin-top:12px; padding:8px 14px; }
+    .result { margin-top:16px; }
+  </style>
+</head>
+<body>
+  <h1>AWS File Uploader</h1>
+  <div class="card">
+    <form id="uploadForm">
+      <label for="fileInput">Choose a file (max 16MB)</label>
+      <input id="fileInput" name="file" type="file" required />
+      <button id="submitBtn" type="submit">Upload to S3</button>
+    </form>
+
+    <div id="status" class="result"></div>
+  </div>
+
+  <script>
+    // === EDIT THIS: replace with your backend URL (Elastic Beanstalk or other)
+    const BACKEND_URL = "https://jaswanth-progress-environment.eba-vfm25apr.ap-south-1.elasticbeanstalk.com";
+    // Example POST endpoint: `${BACKEND_URL}/upload`
+
+    const form = document.getElementById('uploadForm');
+    const statusEl = document.getElementById('status');
+    const submitBtn = document.getElementById('submitBtn');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      statusEl.textContent = '';
+      const input = document.getElementById('fileInput');
+      if (!input.files.length) { statusEl.textContent = 'Please choose a file.'; return; }
+      const file = input.files[0];
+
+      // client-side file size/type checks (same types allowed in backend)
+      const allowed = ['txt','pdf','png','jpg','jpeg','gif','doc','docx','zip'];
+      const ext = file.name.split('.').pop().toLowerCase();
+      if (!allowed.includes(ext)) { statusEl.textContent = 'File type not allowed.'; return; }
+      if (file.size > 16 * 1024 * 1024) { statusEl.textContent = 'File too large (max 16MB).'; return; }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Uploading...';
+
+      try {
+        const fd = new FormData();
+        fd.append('file', file);
+
+        const resp = await fetch(`${BACKEND_URL}/upload`, {
+          method: 'POST',
+          body: fd
+        });
+
+        const data = await resp.json();
+        if (!resp.ok) {
+          statusEl.innerHTML = `<strong>Error:</strong> ${data.error || JSON.stringify(data)}`;
+        } else {
+          statusEl.innerHTML = `<strong>Success!</strong> File URL: <a href="${data.url}" target="_blank">${data.url}</a>`;
+        }
+      } catch (err) {
+        statusEl.textContent = 'Upload failed: ' + err.message;
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Upload to S3';
+      }
+    });
+  </script>
+</body>
+</html>
