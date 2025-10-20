@@ -1,6 +1,6 @@
 branch-defaults:
   main:
-    environment: jaswanth-progress-environment
+    environment: jaswanth-progress
     group_suffix: null
 environment-defaults:
   jaswanth-progress-environment:
